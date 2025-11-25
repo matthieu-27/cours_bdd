@@ -82,3 +82,5 @@ UPDATE `g_article` SET `a_quantite` = 100 WHERE `a_id` = 1;
 
 ALTER TABLE g_voiture  DROP FOREIGN KEY article_fk;
 ALTER TABLE `g_voiture` ADD CONSTRAINT `article_fk` FOREIGN KEY (`v_fk_article_id`) REFERENCES `g_article` (`a_id`) ON UPDATE CASCADE ON DELETE CASCADE;
+
+DELETE FROM g_article WHERE `a_id` = 11 ## supprimer mitsubishi truck
