@@ -79,3 +79,6 @@ insert into g_voiture (v_id, v_marque, v_type, v_energie, v_fk_article_id ) valu
 insert into g_voiture (v_id, v_marque, v_type, v_energie, v_fk_article_id ) values (10, 'Mercury', 'Cougar', 'gazoil', 30);
 
 UPDATE `g_article` SET `a_quantite` = 100 WHERE `a_id` = 1;
+
+ALTER TABLE g_voiture  DROP FOREIGN KEY article_fk;
+ALTER TABLE `g_voiture` ADD CONSTRAINT `article_fk` FOREIGN KEY (`v_fk_article_id`) REFERENCES `g_article` (`a_id`) ON UPDATE CASCADE ON DELETE CASCADE;
