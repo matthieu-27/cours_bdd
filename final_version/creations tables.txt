@@ -1,0 +1,110 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+-- Structure de la table `g_voiture`
+DROP TABLE IF EXISTS `g_voiture`;
+CREATE TABLE IF NOT EXISTS `g_voiture` (
+  `v_id` INT NOT NULL AUTO_INCREMENT,
+  `v_marque` varchar(30) NOT NULL,
+  `v_denomination` varchar(60) NOT NULL,
+  `v_energie` varchar(30) NOT NULL,
+  PRIMARY KEY (`v_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- Structure de la table `g_article`
+DROP TABLE IF EXISTS `g_article`;
+CREATE TABLE IF NOT EXISTS `g_article` (
+  `a_id` INT NOT NULL AUTO_INCREMENT,
+  `a_reference` varchar(30) NOT NULL,
+  `a_designation` varchar(60) NOT NULL,
+  `a_marque` varchar(30) NOT NULL,
+  `a_stock` smallint NOT NULL,
+  PRIMARY KEY (`a_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- Structure de la table `g_client`
+DROP TABLE IF EXISTS `g_client`;
+CREATE TABLE IF NOT EXISTS `g_client` (
+  `c_id` INT NOT NULL AUTO_INCREMENT,
+  `c_nom` varchar(30) NOT NULL,
+  `c_prenom` varchar(30) NOT NULL,
+  `c_adresse` varchar(255) NOT NULL,
+  `c_numero` varchar(20) NOT NULL,
+  PRIMARY KEY (`c_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- Structure de la table `g_facture`
+DROP TABLE IF EXISTS `g_facture`;
+CREATE TABLE IF NOT EXISTS `g_facture` (
+  `f_id` INT NOT NULL AUTO_INCREMENT,
+  `f_taux` decimal(5,2) NOT NULL,
+  `f_temps` decimal(3,1) NOT NULL,
+  `f_tva` decimal(4,2) NOT NULL,
+  `f_ht` decimal(8,2) NOT NULL,
+  `f_ttc` decimal(8,2) NOT NULL,
+  `f_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`f_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- Structure de la table `g_or`
+DROP TABLE IF EXISTS `g_or`;
+CREATE TABLE IF NOT EXISTS `g_or` (
+  `o_id` INT NOT NULL AUTO_INCREMENT,
+  `o_taches` TEXT NOT NULL,
+  `facture_id` INT NOT NULL,
+  PRIMARY KEY (`o_id`),
+  UNIQUE KEY `facture_id` (`facture_id`),
+  CONSTRAINT `g_or_ibfk_1` FOREIGN KEY (`facture_id`) REFERENCES `g_facture` (`f_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- Structure de la table `g_voiture_client`
+DROP TABLE IF EXISTS `g_voiture_client`;
+CREATE TABLE IF NOT EXISTS `g_voiture_client` (
+  `voiture_id` INT NOT NULL,
+  `client_id` INT NOT NULL,
+  `vc_plaque` varchar(15) NOT NULL,
+  `vc_annee` smallint NOT NULL,
+  `vc_vin` varchar(30) NOT NULL,
+  PRIMARY KEY (`voiture_id`,`client_id`),
+  KEY `client_id` (`client_id`),
+  KEY `voiture_id` (`voiture_id`),
+  CONSTRAINT `g_voiture_client_ibfk_1` FOREIGN KEY (`voiture_id`) REFERENCES `g_voiture` (`v_id`),
+  CONSTRAINT `g_voiture_client_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `g_client` (`c_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- Structure de la table `g_client_ordre`
+DROP TABLE IF EXISTS `g_client_ordre`;
+CREATE TABLE IF NOT EXISTS `g_client_ordre` (
+  `order_id` INT NOT NULL,
+  `client_id` INT NOT NULL,
+  PRIMARY KEY (`order_id`,`client_id`),
+  KEY `order_id` (`order_id`),
+  KEY `client_id` (`client_id`),
+  CONSTRAINT `g_client_ordre_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `g_or` (`o_id`),
+  CONSTRAINT `g_client_ordre_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `g_client` (`c_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- Structure de la table `g_article_ordre`
+DROP TABLE IF EXISTS `g_article_ordre`;
+CREATE TABLE IF NOT EXISTS `g_article_ordre` (
+  `article_id` INT NOT NULL,
+  `ordre_id` INT NOT NULL,
+  `a_quantitee` smallint NOT NULL,
+  PRIMARY KEY (`article_id`,`ordre_id`),
+  KEY `article_id` (`article_id`),
+  KEY `ordre_id` (`ordre_id`),
+  CONSTRAINT `g_article_ordre_ibfk_1` FOREIGN KEY (`article_id`) REFERENCES `g_article` (`a_id`),
+  CONSTRAINT `g_article_ordre_ibfk_2` FOREIGN KEY (`ordre_id`) REFERENCES `g_or` (`o_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+COMMIT;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

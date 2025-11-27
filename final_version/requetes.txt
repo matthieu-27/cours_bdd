@@ -1,0 +1,15 @@
+// Magasinier gere stock:
+
+// Tout les articles distinct
+SELECT DISTINCT COUNT(a_designation) FROM g_article; 
+
+// Tout les articles "filtre a air"
+SELECT COUNT(a_designation) FROM g_article AS a WHERE a.a_designation LIKE "FILTRE A AIR";
+
+// La quantité par désignation et la quantité par marque
+SELECT a_stock, a_designation, a_marque FROM g_article AS a WHERE a.a_designation LIKE "FILTRE A HUILE" OR a.marque LIKE "KNETCH"
+
+
+SELECT COUNT(f_id) FROM g_facture AS f
+LEFT JOIN client_facture AS cf ON cf.facture_id = f.f_id
+WHERE cf.client_id = 1
